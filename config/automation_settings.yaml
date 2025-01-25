@@ -1,0 +1,39 @@
+
+proxy:
+  regions:
+    - US
+    - GB
+    - DE
+    - FR
+    - NL
+  rotation_interval: 600  # 10 minutes
+  test_url: "https://www.google.com"
+  
+interaction:
+  watch_duration:
+    min: 30
+    max: 300
+  like_probability: 0.3
+  comment_probability: 0.1
+  scroll_probability: 0.4
+  
+ai:
+  model_path: "models/advanced_model.h5"
+  decision_threshold: 0.8
+  learning_rate: 0.001
+  batch_size: 32
+  
+performance:
+  max_cpu_usage: 80
+  max_memory_usage: 75
+  task_queue_size: 4000
+  monitoring_interval: 60
+
+behavior:
+  human_like_delays: true
+  random_actions: true
+  action_patterns:
+    - scroll
+    - pause
+    - move_mouse
+    - adjust_volume

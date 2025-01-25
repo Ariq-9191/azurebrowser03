@@ -1,0 +1,25 @@
+youtube_automation/
+└── models/
+|    ├── behavior_model.pkl     # Model tersimpan
+|    └── advanced_model.h5      # Model deep learning
+│
+├── src/
+│   ├── core/
+│   │   ├── __init__.py
+│   │   ├── performance_optimizer.py     # Kelas PerformanceOptimizer
+│   │   ├── resource_manager.py          # Kelas ResourceManager
+│   │   ├── cache_manager.py             # Kelas CacheManager
+│   │   └── performance_profiler.py      # Kelas PerformanceProfiler
+│   │   |
+│   ├── proxy_handler.py
+│   ├── browser_manager.py
+│   ├── account_creator.py
+│   ├── human_simulator.py
+│   ├── youtube_account_manager.py
+│   ├── youtube_video_interaction.py
+│   └── main.py
+│
+├── config/
+│   └── performance_config.json
+│
+└── requirements.txt

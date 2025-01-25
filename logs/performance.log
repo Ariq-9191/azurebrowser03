@@ -1,0 +1,14 @@
+2025-01-24 12:08:59,345 - root - INFO - Fungsi: test_function
+2025-01-24 12:08:59,346 - root - INFO - Waktu Eksekusi: 1.3225 detik
+2025-01-24 12:08:59,346 - root - INFO - Memory Saat Ini: 0.00 MB
+2025-01-24 12:08:59,346 - root - INFO - Peak Memory: 0.00 MB
+2025-01-24 12:10:31,025 - root - INFO - Fungsi: test_function
+2025-01-24 12:10:31,026 - root - INFO - Waktu Eksekusi: 1.3973 detik
+2025-01-24 12:10:31,026 - root - INFO - Memory Digunakan: 0.06 MB
+2025-01-24 12:10:31,026 - root - INFO - Memory Saat Ini: 0.00 MB
+2025-01-24 12:10:31,026 - root - INFO - Peak Memory: 0.00 MB
+2025-01-24 12:11:25,306 - root - INFO - Fungsi: test_function
+2025-01-24 12:11:25,307 - root - INFO - Waktu Eksekusi: 5.3190 detik
+2025-01-24 12:11:25,308 - root - INFO - Memory Digunakan: 3.45 MB
+2025-01-24 12:11:25,308 - root - INFO - Memory Saat Ini: 0.00 MB
+2025-01-24 12:11:25,308 - root - INFO - Peak Memory: 638.34 MB

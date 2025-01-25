@@ -1,0 +1,44 @@
+{
+	"sms-activate": {
+		"api_key": "YOUR_SMS_ACTIVATE_API_KEY",
+		"base_url": "https://api.sms-activate.org/stubs/handler_api.php",
+		"countries": {
+			"US": 12,
+			"GB": 16,
+			"DE": 43,
+			"FR": 33,
+			"NL": 48
+		}
+	},
+	"smspva": {
+		"api_key": "YOUR_SMSPVA_API_KEY",
+		"base_url": "https://smspva.com/priemnik.php",
+		"countries": {
+			"US": "usa",
+			"GB": "uk",
+			"DE": "germany",
+			"FR": "france",
+			"NL": "netherlands"
+		}
+	},
+	"5sim": {
+		"api_key": "YOUR_5SIM_API_KEY",
+		"base_url": "https://5sim.net/v1/user",
+		"countries": {
+			"US": "usa",
+			"GB": "england",
+			"DE": "germany",
+			"FR": "france",
+			"NL": "netherlands"
+		}
+	},
+	"service_priority": ["sms-activate", "5sim", "smspva"],
+	"retry_attempts": 3,
+	"retry_delay": 5,
+	"verification_timeout": 300,
+	"number_blacklist": [],
+	"price_limits": {
+		"max_price_per_number": 2.0,
+		"preferred_price_range": [0.5, 1.5]
+	}
+}

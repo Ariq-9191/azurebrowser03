@@ -1,0 +1,12 @@
+{
+    "https://youtube.com/watch?v=test1": {
+        "url": "https://youtube.com/watch?v=test1",
+        "interaction_count": 2,
+        "last_interaction_time": "2025-01-24T12:14:45.953151",
+        "first_interaction_time": "2025-01-24T12:14:45.947483",
+        "interactions": {
+            "view": 1,
+            "like": 1
+        }
+    }
+}

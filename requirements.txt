@@ -1,6 +1,9 @@
-# Dev environment
-pip
-autopep8
-
-# App
-flask
+selenium
+undetected-chromedriver
+pyppeteer
+requests
+beautifulsoup4
+numpy
+pandas
+scikit-learn
+tensorflow

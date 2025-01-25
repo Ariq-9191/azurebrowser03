@@ -1,0 +1,58 @@
+{
+    "user_agents": [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36", 
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    ],
+    "platforms": [
+        "Win32",
+        "MacIntel", 
+        "Linux x86_64",
+        "Linux aarch64",
+        "Win64"
+    ],
+    "webgl_vendors": [
+        "Google Inc. (NVIDIA)",
+        "Google Inc. (Intel)",
+        "Google Inc. (AMD)",
+        "Apple GPU",
+        "Intel Inc.",
+        "NVIDIA Corporation"
+    ],
+    "renderers": [
+        "ANGLE (NVIDIA GeForce RTX 3060 Direct3D11 vs_5_0)",
+        "ANGLE (Intel(R) UHD Graphics Direct3D11 vs_5_0)",
+        "ANGLE (AMD Radeon RX 6800 XT Direct3D11 vs_5_0)",
+        "Apple M1 Pro",
+        "Mesa DRI Intel(R) UHD Graphics (CML GT2)"
+    ],
+    "languages": [
+        "en-US",
+        "en-GB", 
+        "de-DE",
+        "fr-FR",
+        "es-ES",
+        "it-IT",
+        "nl-NL",
+        "pt-BR"
+    ],
+    "screen_resolutions": [
+        "1920x1080",
+        "2560x1440", 
+        "3840x2160",
+        "1366x768",
+        "1440x900",
+        "1680x1050"
+    ],
+    "color_depths": [24, 32],
+    "timezone_offsets": [-480, -420, -360, -300, -240, -180, 0, 60, 120, 180],
+    "fonts": [
+        "Arial",
+        "Helvetica",
+        "Times New Roman", 
+        "Courier New",
+        "Verdana",
+        "Georgia"
+    ]
+}
