@@ -1,51 +1,86 @@
 import logging
 import random
 import time
+import numpy as np
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
 
 class InteractionSimulator:
 	def __init__(self, ai_brain=None):
 		self.logger = logging.getLogger(__name__)
 		self.ai_brain = ai_brain
 		self.interaction_patterns = self._load_patterns()
+		self.metrics_collector = {
+			'mouse_movements': [],
+			'scroll_patterns': [],
+			'typing_speeds': [],
+			'interaction_times': []
+		}
 		
-	def simulate_video_interaction(self, driver: Any, video_url: str, params: Dict = None):
+	def simulate_video_interaction(self, driver: Any, video_url: str, params: Dict = None) -> Tuple[bool, Dict]:
 		"""Simulate human-like video interaction"""
 		try:
+			start_time = time.time()
+			metrics = {
+				'watch_duration': 0,
+				'scroll_count': 0,
+				'interaction_frequency': 0,
+				'mouse_movement_speed': 0,
+				'typing_speed': 0,
+				'pause_frequency': 0,
+				'click_accuracy': 0,
+				'scroll_pattern_regularity': 0,
+				'interaction_consistency': 0,
+				'session_duration': 0
+			}
+			
 			driver.get(video_url)
 			self._wait_for_video_load(driver)
 			
-			# Random initial wait
-			time.sleep(random.uniform(2, 5))
+			# Get AI-driven behavior parameters if available
+			if self.ai_brain:
+				behavior_params = self.ai_brain.get_behavior_parameters()
+				params = {**params, **behavior_params} if params else behavior_params
 			
-			# Scroll patterns
-			self._simulate_scroll_pattern(driver)
-			
-			# Watch video
+			# Execute interactions with metrics collection
+			self._simulate_scroll_pattern(driver, metrics)
 			watch_duration = self._determine_watch_duration(params)
-			self._watch_video_with_interactions(driver, watch_duration)
+			self._watch_video_with_interactions(driver, watch_duration, metrics)
 			
-			# Interact with video
-			if random.random() < 0.3:  # 30% chance to like
-				self._like_video(driver)
-				
-			return True
+			# Update final metrics
+			metrics['session_duration'] = time.time() - start_time
+			metrics['interaction_consistency'] = self._calculate_consistency(metrics)
+			
+			# Save metrics for AI learning
+			if self.ai_brain:
+				self.ai_brain.record_interaction(metrics)
+			
+			return True, metrics
 			
 		except Exception as e:
 			self.logger.error(f"Video interaction failed: {str(e)}")
-			return False
+			return False, {}
 			
-	def _watch_video_with_interactions(self, driver: Any, duration: int):
-		"""Watch video with random interactions"""
+	def _watch_video_with_interactions(self, driver: Any, duration: int, metrics: Dict):
+		"""Watch video with AI-driven interaction patterns"""
 		start_time = time.time()
+		interaction_count = 0
+		
 		while time.time() - start_time < duration:
-			if random.random() < 0.2:  # 20% chance for interaction
+			if self.ai_brain:
+				should_interact = self.ai_brain.should_perform_interaction(metrics)
+			else:
+				should_interact = random.random() < 0.2
+				
+			if should_interact:
 				self._random_interaction(driver)
-			time.sleep(random.uniform(1, 3))
+				interaction_count += 1
+				metrics['interaction_frequency'] = interaction_count / (time.time() - start_time)
+				
+			time.sleep(random.uniform(0.5, 2))
 			
 	def _random_interaction(self, driver: Any):
 		"""Perform random interaction"""
@@ -141,3 +176,16 @@ class InteractionSimulator:
 			time.sleep(random.uniform(0.5, 2))
 		except:
 			self.logger.debug("Could not hover over progress bar")
+			
+	def _calculate_consistency(self, metrics: Dict) -> float:
+		"""Calculate interaction consistency score"""
+		try:
+			# Analyze patterns in collected metrics
+			movement_consistency = np.std(self.metrics_collector['mouse_movements'])
+			scroll_consistency = np.std(self.metrics_collector['scroll_patterns'])
+			timing_consistency = np.std(self.metrics_collector['interaction_times'])
+			
+			# Normalize and combine scores
+			return 1.0 - np.mean([movement_consistency, scroll_consistency, timing_consistency])
+		except:
+			return 0.5
