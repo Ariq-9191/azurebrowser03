@@ -1,6 +1,7 @@
 import logging
 import random
 import time
+from typing import Optional
 import numpy as np
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
@@ -20,67 +21,186 @@ class InteractionSimulator:
 			'interaction_times': []
 		}
 		
+	def _init_metrics(self) -> Dict:
+		"""Initialize metrics dictionary"""
+		return {
+			'watch_duration': 0,
+			'scroll_count': 0,
+			'interaction_frequency': 0,
+			'mouse_movement_speed': 0,
+			'typing_speed': 0,
+			'pause_frequency': 0,
+			'click_accuracy': 0,
+			'scroll_pattern_regularity': 0,
+			'interaction_consistency': 0,
+			'session_duration': 0,
+			'completion_rate': 0
+		}
+
 	def simulate_video_interaction(self, driver: Any, video_url: str, params: Dict = None) -> Tuple[bool, Dict]:
 		"""Simulate human-like video interaction"""
 		try:
 			start_time = time.time()
-			metrics = {
-				'watch_duration': 0,
-				'scroll_count': 0,
-				'interaction_frequency': 0,
-				'mouse_movement_speed': 0,
-				'typing_speed': 0,
-				'pause_frequency': 0,
-				'click_accuracy': 0,
-				'scroll_pattern_regularity': 0,
-				'interaction_consistency': 0,
-				'session_duration': 0
-			}
+			metrics = self._init_metrics()
 			
 			driver.get(video_url)
 			self._wait_for_video_load(driver)
 			
-			# Get AI-driven behavior parameters if available
-			if self.ai_brain:
-				behavior_params = self.ai_brain.get_behavior_parameters()
-				params = {**params, **behavior_params} if params else behavior_params
+			# Get video duration
+			video_duration = self._get_video_duration(driver)
+			if not video_duration:
+				return False, metrics
+				
+			# Calculate target watch duration
+			target_duration = min(
+				params.get('duration', 180),
+				int(video_duration * params.get('min_completion', 0.8))
+			)
 			
-			# Execute interactions with metrics collection
-			self._simulate_scroll_pattern(driver, metrics)
-			watch_duration = self._determine_watch_duration(params)
-			self._watch_video_with_interactions(driver, watch_duration, metrics)
+			# Initial random delay before interaction
+			time.sleep(random.uniform(2, 5))
 			
-			# Update final metrics
+			# Execute pre-watch interactions
+			self._pre_watch_interactions(driver, metrics)
+			
+			# Watch video with natural interactions
+			watch_success = self._watch_video_naturally(
+				driver, 
+				target_duration,
+				params.get('interaction_frequency', 0.2),
+				metrics
+			)
+			
+			if watch_success:
+				# Post-watch interactions
+				self._post_watch_interactions(driver, metrics)
+				
 			metrics['session_duration'] = time.time() - start_time
-			metrics['interaction_consistency'] = self._calculate_consistency(metrics)
+			metrics['completion_rate'] = metrics['watch_duration'] / video_duration if video_duration else 0
 			
-			# Save metrics for AI learning
+			# Save metrics for AI learning if available
 			if self.ai_brain:
 				self.ai_brain.record_interaction(metrics)
 			
-			return True, metrics
+			return watch_success, metrics
 			
 		except Exception as e:
 			self.logger.error(f"Video interaction failed: {str(e)}")
-			return False, {}
+			return False, metrics
 			
-	def _watch_video_with_interactions(self, driver: Any, duration: int, metrics: Dict):
-		"""Watch video with AI-driven interaction patterns"""
+	def _watch_video_naturally(self, driver: Any, duration: int, interaction_freq: float, metrics: Dict) -> bool:
+		"""Watch video with natural viewing patterns"""
 		start_time = time.time()
-		interaction_count = 0
+		last_interaction = 0
+		pause_count = 0
 		
 		while time.time() - start_time < duration:
-			if self.ai_brain:
-				should_interact = self.ai_brain.should_perform_interaction(metrics)
-			else:
-				should_interact = random.random() < 0.2
+			current_time = time.time()
+			elapsed = current_time - start_time
+			
+			# Random pauses (max 2 times)
+			if pause_count < 2 and random.random() < 0.1:
+				self._pause_video(driver)
+				time.sleep(random.uniform(2, 5))
+				self._play_video(driver)
+				pause_count += 1
 				
-			if should_interact:
-				self._random_interaction(driver)
-				interaction_count += 1
-				metrics['interaction_frequency'] = interaction_count / (time.time() - start_time)
+			# Natural interactions
+			if current_time - last_interaction > random.uniform(10, 30):
+				if random.random() < interaction_freq:
+					interaction = random.choice([
+						self._scroll_slightly,
+						self._move_mouse_randomly,
+						self._hover_progress_bar,
+						self._adjust_volume
+					])
+					interaction(driver)
+					last_interaction = current_time
+					
+			# Simulate attention spans
+			if elapsed > 30 and random.random() < 0.1:
+				time.sleep(random.uniform(0.5, 2))
 				
-			time.sleep(random.uniform(0.5, 2))
+			time.sleep(0.5)  # Base loop delay
+			
+		metrics['watch_duration'] = time.time() - start_time
+		return True
+
+	def _get_video_duration(self, driver: Any) -> Optional[int]:
+		"""Get video duration in seconds"""
+		try:
+			duration_element = WebDriverWait(driver, 10).until(
+				EC.presence_of_element_located((By.CLASS_NAME, "ytp-time-duration"))
+			)
+			duration_text = duration_element.text
+			parts = duration_text.split(':')
+			if len(parts) == 2:
+				return int(parts[0]) * 60 + int(parts[1])
+			elif len(parts) == 3:
+				return int(parts[0]) * 3600 + int(parts[1]) * 60 + int(parts[2])
+		except:
+			self.logger.warning("Could not get video duration")
+			return None
+
+	def _pre_watch_interactions(self, driver: Any, metrics: Dict):
+		"""Perform pre-watch interactions"""
+		# Random initial scroll
+		if random.random() < 0.7:
+			self._scroll_slightly(driver)
+			time.sleep(random.uniform(1, 3))
+		
+		# Sometimes check video description
+		if random.random() < 0.3:
+			self._expand_description(driver)
+			time.sleep(random.uniform(2, 4))
+
+	def _post_watch_interactions(self, driver: Any, metrics: Dict):
+		"""Perform post-watch interactions"""
+		# Sometimes like video
+		if random.random() < 0.2:
+			self._like_video(driver)
+			
+		# Sometimes check related videos
+		if random.random() < 0.4:
+			self._scroll_to_recommendations(driver)
+			time.sleep(random.uniform(2, 4))
+
+	def _pause_video(self, driver: Any):
+		"""Pause video playback"""
+		try:
+			video = WebDriverWait(driver, 3).until(
+				EC.presence_of_element_located((By.CLASS_NAME, "html5-main-video"))
+			)
+			video.click()
+		except:
+			self.logger.debug("Could not pause video")
+
+	def _play_video(self, driver: Any):
+		"""Resume video playback"""
+		try:
+			video = WebDriverWait(driver, 3).until(
+				EC.presence_of_element_located((By.CLASS_NAME, "html5-main-video"))
+			)
+			video.click()
+		except:
+			self.logger.debug("Could not play video")
+
+	def _expand_description(self, driver: Any):
+		"""Expand video description"""
+		try:
+			expand_button = WebDriverWait(driver, 3).until(
+				EC.presence_of_element_located((By.CSS_SELECTOR, "tp-yt-paper-button#expand"))
+			)
+			expand_button.click()
+		except:
+			self.logger.debug("Could not expand description")
+
+	def _scroll_to_recommendations(self, driver: Any):
+		"""Scroll to video recommendations"""
+		try:
+			driver.execute_script("window.scrollTo(0, window.innerHeight);")
+		except:
+			self.logger.debug("Could not scroll to recommendations")
 			
 	def _random_interaction(self, driver: Any):
 		"""Perform random interaction"""
