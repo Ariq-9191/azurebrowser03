@@ -1,25 +1,106 @@
 youtube_automation/
-└── models/
-|    ├── behavior_model.pkl     # Model tersimpan
-|    └── advanced_model.h5      # Model deep learning
-│
 ├── src/
 │   ├── core/
 │   │   ├── __init__.py
-│   │   ├── performance_optimizer.py     # Kelas PerformanceOptimizer
-│   │   ├── resource_manager.py          # Kelas ResourceManager
-│   │   ├── cache_manager.py             # Kelas CacheManager
-│   │   └── performance_profiler.py      # Kelas PerformanceProfiler
-│   │   |
-│   ├── proxy_handler.py
-│   ├── browser_manager.py
-│   ├── account_creator.py
-│   ├── human_simulator.py
-│   ├── youtube_account_manager.py
-│   ├── youtube_video_interaction.py
+│   │   ├── ai/
+│   │   │   ├── __init__.py
+│   │   │   ├── ai_brain.py
+│   │   │   ├── ai_model.py
+│   │   │   ├── ai_monitor.py
+│   │   │   └── advanced_ai_model.py
+│   │   │
+│   │   ├── distributed/
+│   │   │   ├── __init__.py
+│   │   │   ├── cluster_manager.py
+│   │   │   ├── load_balancer.py
+│   │   │   ├── node_manager.py
+│   │   │   ├── task_distributor.py
+│   │   │   ├── failover_handler.py
+│   │   │   └── utils/
+│   │   │       ├── __init__.py
+│   │   │       ├── config_loader.py
+│   │   │       ├── metrics_collector.py
+│   │   │       └── logger.py
+│   │   │
+│   │   ├── performance/
+│   │   │   ├── __init__.py
+│   │   │   ├── performance_optimizer.py
+│   │   │   ├── performance_profiler.py
+│   │   │   └── resource_manager.py
+│   │   │
+│   │   ├── security/
+│   │   │   ├── __init__.py
+│   │   │   ├── security_validator.py
+│   │   │   └── version_manager.py
+│   │   │
+│   │   └── storage/
+│   │       ├── __init__.py
+│   │       └── cache_manager.py
+│   │
+│   ├── modules/
+│   │   ├── __init__.py
+│   │   ├── browser/
+│   │   │   ├── __init__.py
+│   │   │   ├── browser_manager.py
+│   │   │   ├── browser_integration.py
+│   │   │   └── profile_manager.py
+│   │   │
+│   │   ├── account/
+│   │   │   ├── __init__.py
+│   │   │   ├── account_creator.py
+│   │   │   └── phone_verifier.py
+│   │   │
+│   │   ├── session/
+│   │   │   ├── __init__.py
+│   │   │   └── session_manager.py
+│   │   │
+│   │   └── interaction/
+│   │       ├── __init__.py
+│   │       └── interaction_simulator.py
+│   │
 │   └── main.py
 │
+├── tests/
+│   ├── __init__.py
+│   ├── unit/
+│   │   ├── __init__.py
+│   │   ├── test_ai/
+│   │   ├── test_performance/
+│   │   └── test_security/
+│   │
+│   └── integration/
+│       ├── __init__.py
+│       └── test_automation/
+│
 ├── config/
-│   └── performance_config.json
+│   ├── ai/
+│   │   ├── ai_config.json
+│   │   └── model_config.json
+│   │
+│   ├── distributed/
+│   │   └── cluster_config.json
+│   │
+│   ├── security/
+│   │   └── security_config.json
+│   │
+│   └── automation_settings.yaml
+│
+├── data/
+│   ├── models/
+│   │   ├── behavior_model.pkl
+│   │   ├── advanced_model.h5
+│   │   └── deep_learning_model.h5
+│   │
+│   ├── cache/
+│   ├── sessions/
+│   └── metrics/
+│
+├── logs/
+│   ├── app.log
+│   └── cluster.log
+│
+├── docs/
+│   ├── architecture.md
+│   └── api/
 │
 └── requirements.txt

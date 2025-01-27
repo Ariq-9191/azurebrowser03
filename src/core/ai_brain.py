@@ -1,12 +1,15 @@
 import logging
 import numpy as np
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
 import tensorflow as tf
 from .advanced_ai_model import load_model
 import json
 from pathlib import Path
 import time
 import random
+import sqlite3
+from datetime import datetime
+import pickle
 
 class AIBrain:
 	def __init__(self):
@@ -14,8 +17,12 @@ class AIBrain:
 		self.model = None
 		self.behavior_model = None
 		self.interaction_history = []
+		self.memory_db = self._initialize_memory_db()
 		self.load_models()
 		self.behavior_params = self._load_behavior_params()
+		self.learning_rate = 0.001
+		self.experience_buffer = []
+		self.security_validator = SecurityValidator()
 		self.bot_detection_thresholds = {
 			'interaction_consistency': 0.95,  # Too consistent = bot-like
 			'timing_regularity': 0.90,
@@ -289,6 +296,122 @@ class AIBrain:
 			self.logger.error(f"Scroll pattern analysis failed: {str(e)}")
 			return 0.5
 			
+	def _initialize_memory_db(self):
+		"""Initialize SQLite database for long-term memory"""
+		db_path = Path(__file__).parent.parent.parent / 'data' / 'memory.db'
+		db_path.parent.mkdir(exist_ok=True)
+		conn = sqlite3.connect(str(db_path))
+		c = conn.cursor()
+		
+		# Create tables for different types of memories
+		c.execute('''CREATE TABLE IF NOT EXISTS experiences
+					(id INTEGER PRIMARY KEY, timestamp TEXT,
+					 context TEXT, outcome TEXT, success INTEGER)''')
+					 
+		c.execute('''CREATE TABLE IF NOT EXISTS learned_patterns
+					(id INTEGER PRIMARY KEY, pattern_type TEXT,
+					 pattern_data BLOB, confidence REAL)''')
+					 
+		conn.commit()
+		return conn
+		
+	def store_experience(self, context: Dict, outcome: Dict, success: bool):
+		"""Store new experience in long-term memory"""
+		c = self.memory_db.cursor()
+		c.execute('''INSERT INTO experiences (timestamp, context, outcome, success)
+					VALUES (?, ?, ?, ?)''',
+					(datetime.now().isoformat(),
+					 json.dumps(context),
+					 json.dumps(outcome),
+					 int(success)))
+		self.memory_db.commit()
+		
+	def learn_from_experience(self):
+		"""Self-learning from stored experiences"""
+		c = self.memory_db.cursor()
+		recent_experiences = c.execute(
+			'''SELECT context, outcome, success FROM experiences
+			   ORDER BY timestamp DESC LIMIT 100''').fetchall()
+			   
+		if recent_experiences:
+			X = []
+			y = []
+			for context, outcome, success in recent_experiences:
+				features = self._extract_learning_features(
+					json.loads(context),
+					json.loads(outcome)
+				)
+				X.append(features)
+				y.append(success)
+				
+			X = np.array(X)
+			y = np.array(y)
+			
+			# Update behavior model
+			if self.behavior_model:
+				self.behavior_model.fit(
+					X, y,
+					epochs=5,
+					batch_size=32,
+					verbose=0
+				)
+				
+	def _extract_learning_features(self, context: Dict, outcome: Dict) -> np.ndarray:
+		"""Extract features for learning from experience"""
+		features = [
+			context.get('interaction_frequency', 0),
+			context.get('timing_regularity', 0),
+			outcome.get('success_rate', 0),
+			outcome.get('detection_risk', 0),
+			context.get('complexity', 0)
+		]
+		return np.array(features)
+		
+	def analyze_code_pattern(self, code: str) -> Dict:
+		"""Analyze code patterns for better understanding"""
+		try:
+			patterns = {
+				'complexity': self._calculate_complexity(code),
+				'structure': self._analyze_structure(code),
+				'security_risks': self.security_validator.analyze(code)
+			}
+			return patterns
+		except Exception as e:
+			self.logger.error(f"Code analysis failed: {str(e)}")
+			return {}
+			
+	def _calculate_complexity(self, code: str) -> float:
+		"""Calculate code complexity metrics"""
+		# Implementation of code complexity calculation
+		pass
+		
+	def _analyze_structure(self, code: str) -> Dict:
+		"""Analyze code structure patterns"""
+		# Implementation of code structure analysis
+		pass
+		
+	def update_self(self) -> bool:
+		"""Self-update mechanism"""
+		try:
+			# Check for model updates
+			new_model_available = self._check_for_updates()
+			if new_model_available:
+				self._download_and_apply_updates()
+				
+			# Optimize current models
+			self._optimize_models()
+			
+			return True
+		except Exception as e:
+			self.logger.error(f"Self-update failed: {str(e)}")
+			return False
+			
+	def _optimize_models(self):
+		"""Optimize AI models based on performance history"""
+		if self.behavior_model and len(self.experience_buffer) > 100:
+			# Implement model optimization logic
+			pass
+
 	def _determine_movement_pattern(self, interactions: List[Dict]) -> str:
 		"""Analyze and determine movement pattern type"""
 		try:
@@ -333,3 +456,17 @@ class AIBrain:
 			
 		except Exception as e:
 			self.logger.error(f"Failed to update behavior model: {str(e)}")
+			
+class SecurityValidator:
+	def __init__(self):
+		self.risk_patterns = self._load_risk_patterns()
+		
+	def _load_risk_patterns(self) -> Dict:
+		"""Load security risk patterns"""
+		# Implementation of security pattern loading
+		return {}
+		
+	def analyze(self, code: str) -> Dict:
+		"""Analyze code for security risks"""
+		# Implementation of security analysis
+		return {}
